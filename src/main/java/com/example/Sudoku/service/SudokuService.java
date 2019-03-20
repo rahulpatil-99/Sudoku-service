@@ -9,7 +9,9 @@ import java.util.HashSet;
 public class SudokuService {
 
     public Boolean validate(Grid grid) {
-        return grid.getDetails().size() == new HashSet<>(grid.getDetails()).size();
+        return grid.getDetails()
+                .stream()
+                .anyMatch(s-> s.size() == new HashSet<>(s).size());
 
     }
 }

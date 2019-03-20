@@ -4,21 +4,21 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 
 @JsonAutoDetect(creatorVisibility = ANY, fieldVisibility = ANY)
 public class Grid {
 
-    private final List<String> details;
+    private final ArrayList<ArrayList<String>> details;
 
     @JsonCreator
-    public Grid(@JsonProperty("details") List<String> details) {
+    public Grid(@JsonProperty("details") ArrayList<ArrayList<String>> details) {
         this.details = details;
     }
 
-    public List<String> getDetails() {
+    public ArrayList<ArrayList<String>> getDetails() {
         return details;
     }
 

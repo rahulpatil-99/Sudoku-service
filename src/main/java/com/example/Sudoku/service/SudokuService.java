@@ -4,6 +4,8 @@ import com.example.Sudoku.domain.Grid;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @Service
 public class SudokuService {
@@ -36,5 +38,22 @@ public class SudokuService {
             columns.add(new ArrayList<>());
         }
         return columns;
+    }
+
+    public ArrayList<String> createBlock(Grid grid) {
+        ArrayList<ArrayList<String>> firstThree = new ArrayList<>(grid.getDetails().subList(0, 3));
+        ArrayList<ArrayList<String>> newList = new ArrayList<>();
+        firstThree.forEach(row -> newList.add(new ArrayList<>(row.subList(0,3))));
+
+        return newList.stream().flatMap(Collection::stream).collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public ArrayList<String> createBlocksForRows(Grid grid) {
+        return new ArrayList<>();
+    }
+
+    public ArrayList<ArrayList<String>> removeFirstThree(ArrayList<ArrayList<String>> rows) {
+        return new ArrayList<>(rows.subList(3,rows.size()));
+
     }
 }

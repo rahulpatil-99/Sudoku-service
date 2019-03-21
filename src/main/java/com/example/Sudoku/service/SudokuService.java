@@ -15,7 +15,7 @@ public class SudokuService {
     public boolean DoesHaveUniqueElements(Grid grid) {
         return grid.getDetails()
                 .stream()
-                .anyMatch(s-> s.size() == s.stream().distinct().toArray().length);
+                .allMatch(s-> s.size() == s.stream().distinct().toArray().length);
     }
 
 

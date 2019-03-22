@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,7 +20,6 @@ public class SudokuService {
                 .stream()
                 .allMatch(s-> s.size() == s.stream().distinct().toArray().length);
     }
-
 
     public Grid transpose(Grid grid) {
         ArrayList<ArrayList<String>> rows = grid.getDetails();
@@ -40,20 +40,25 @@ public class SudokuService {
         return columns;
     }
 
-    public ArrayList<String> createBlock(Grid grid) {
-        ArrayList<ArrayList<String>> firstThree = new ArrayList<>(grid.getDetails().subList(0, 3));
-        ArrayList<ArrayList<String>> newList = new ArrayList<>();
-        firstThree.forEach(row -> newList.add(new ArrayList<>(row.subList(0,3))));
-
-        return newList.stream().flatMap(Collection::stream).collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    public ArrayList<String> createBlocksForRows(Grid grid) {
-        return new ArrayList<>();
+    public ArrayList<String> createBlock(ArrayList<ArrayList<String>> rows) {
+        return rows.stream()
+                .map(s -> s.subList(0, 3))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public <T extends ArrayList> T removeFirstThree(T rows) {
         return (T) new ArrayList<T>(rows.subList(3,rows.size()));
+    }
+
+    public ArrayList<ArrayList<String>> createBlocksOfRows(ArrayList<ArrayList<String>> rows) {
+        ArrayList<ArrayList<String>> blocks = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            blocks.add(createBlock(rows));
+            rows = rows.stream().map(this::removeFirstThree)
+                    .collect(Collectors.toCollection(ArrayList::new));
+        }
+        return blocks;
     }
 
 

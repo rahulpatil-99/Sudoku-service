@@ -11,21 +11,21 @@ import static com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility.ANY;
 @JsonAutoDetect(creatorVisibility = ANY, fieldVisibility = ANY)
 public class Grid {
 
-    private final ArrayList<ArrayList<String>> details;
+    private final ArrayList<ArrayList<String>> rows;
 
     @JsonCreator
-    public Grid(@JsonProperty("details") ArrayList<ArrayList<String>> details) {
-        this.details = details;
+    public Grid(@JsonProperty("rows") ArrayList<ArrayList<String>> rows) {
+        this.rows = rows;
     }
 
-    public ArrayList<ArrayList<String>> getDetails() {
-        return details;
+    public ArrayList<ArrayList<String>> getRows() {
+        return rows;
     }
 
     @Override
     public String toString() {
         return "Grid{" +
-                "details=" + details +
+                "rows=" + rows +
                 '}';
     }
 }

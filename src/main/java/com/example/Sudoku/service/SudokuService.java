@@ -5,31 +5,30 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class SudokuService {
 
     public Boolean validate(Grid grid) {
-        return DoesHaveUniqueElements(grid) && DoesHaveUniqueElements(transpose(grid));
+        return DoesHaveUniqueElements(grid.getRows()) &&
+                DoesHaveUniqueElements(transpose(grid.getRows())) &&
+                DoesHaveUniqueElements(createBlocksFromGrid(grid));
     }
 
-    public boolean DoesHaveUniqueElements(Grid grid) {
-        return grid.getDetails()
-                .stream()
+    public boolean DoesHaveUniqueElements(ArrayList<ArrayList<String>> rows) {
+        return rows.stream()
                 .allMatch(s-> s.size() == s.stream().distinct().toArray().length);
     }
 
-    public Grid transpose(Grid grid) {
-        ArrayList<ArrayList<String>> rows = grid.getDetails();
+    public ArrayList<ArrayList<String>> transpose(ArrayList<ArrayList<String>> rows) {
         ArrayList<ArrayList<String>> columns = createColumnsOfSize(rows.size());
         rows.forEach(row -> {
             for (int pos = 0; pos < row.size(); pos++) {
                 columns.get(pos).add(row.get(pos));
             }
         });
-        return new Grid(columns);
+        return columns;
     }
 
     private ArrayList<ArrayList<String>> createColumnsOfSize(int size) {
@@ -62,4 +61,13 @@ public class SudokuService {
     }
 
 
+    public ArrayList<ArrayList<String>> createBlocksFromGrid(Grid grid) {
+        ArrayList<ArrayList<String>> rows = grid.getRows();
+        ArrayList<ArrayList<String>> blocks = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            blocks.addAll(createBlocksOfRows(new ArrayList<>(rows.subList(0, 3))));
+            rows = removeFirstThree(rows);
+        }
+        return blocks;
+    }
 }

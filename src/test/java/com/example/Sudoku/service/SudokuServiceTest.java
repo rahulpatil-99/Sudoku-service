@@ -19,24 +19,15 @@ public class SudokuServiceTest {
     public void setUp() {
         sudokuService = new SudokuService();
         rows = new ArrayList<>();
-        row1 = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9"));
-        row2 = new ArrayList<>(Arrays.asList("2", "3", "4", "5", "6", "7", "8", "9", "1"));
-        row3 = new ArrayList<>(Arrays.asList("3", "4", "5", "6", "7", "8", "9", "1", "2"));
-        row4 = new ArrayList<>(Arrays.asList("4", "5", "6", "7", "8", "9", "1", "2", "3"));
-        row5 = new ArrayList<>(Arrays.asList("5", "6", "7", "8", "9", "1", "2", "3", "4"));
-        row6 = new ArrayList<>(Arrays.asList("6", "7", "8", "9", "1", "2", "3", "4", "5"));
-        row7 = new ArrayList<>(Arrays.asList("7", "8", "9", "1", "2", "3", "4", "5", "6"));
-        row8 = new ArrayList<>(Arrays.asList("8", "9", "1", "2", "3", "4", "5", "6", "7"));
-        row9 = new ArrayList<>(Arrays.asList("9", "1", "2", "3", "4", "5", "6", "7", "8"));
-    }
-
-    @Test
-    public void shouldReturnTrueWhenNoNumberIsRepeated() {
-        rows.add(new ArrayList<>(Arrays.asList("1", "2", "3")));
-        rows.add(new ArrayList<>(Arrays.asList("2", "3", "4")));
-        rows.add(new ArrayList<>(Arrays.asList("4", "1", "2")));
-
-        assertTrue(sudokuService.validate(new Grid(rows)));
+        row1 = new ArrayList<>(Arrays.asList("7", "3", "5", "6", "1", "4", "8", "9", "2"));
+        row2 = new ArrayList<>(Arrays.asList("8", "4", "2", "9", "7", "3", "5", "6", "1"));
+        row3 = new ArrayList<>(Arrays.asList("9", "6", "1", "2", "8", "5", "3", "7", "4"));
+        row4 = new ArrayList<>(Arrays.asList("2", "8", "6", "3", "4", "9", "1", "5", "7"));
+        row5 = new ArrayList<>(Arrays.asList("4", "1", "3", "8", "5", "7", "9", "2", "6"));
+        row6 = new ArrayList<>(Arrays.asList("5", "7", "9", "1", "2", "6", "4", "3", "8"));
+        row7 = new ArrayList<>(Arrays.asList("1", "5", "7", "4", "9", "2", "6", "8", "3"));
+        row8 = new ArrayList<>(Arrays.asList("6", "9", "4", "7", "3", "8", "2", "1", "5"));
+        row9 = new ArrayList<>(Arrays.asList("3", "2", "8", "5", "6", "1", "7", "4", "9"));
     }
 
     @Test
@@ -63,14 +54,13 @@ public class SudokuServiceTest {
         ArrayList<ArrayList<String>> columns = new ArrayList<>();
         columns.add(new ArrayList<>(Arrays.asList("1", "3")));
         columns.add(new ArrayList<>(Arrays.asList("2", "4")));
-        ArrayList<ArrayList<String>> expected = sudokuService.transpose(new Grid(rows)).getDetails();
+        ArrayList<ArrayList<String>> expected = sudokuService.transpose(rows);
 
         assertEquals(columns, expected);
     }
 
-
     @Test
-    public void solveSudukoGrid() {
+    public void shouldReturnTrueIfAllValidationsAreSatisfied() {
         rows.add(row1);
         rows.add(row2);
         rows.add(row3);
@@ -84,32 +74,32 @@ public class SudokuServiceTest {
     }
 
     @Test
-    public void shouldCreateBlockRowOfSize3() {
+    public void shouldCreateSingleBlock() {
         rows.add(row1);
         rows.add(row2);
         rows.add(row3);
 
-        ArrayList<String> block1 = new ArrayList<>(Arrays.asList("1", "2", "3", "2", "3", "4", "3", "4", "5"));
+        ArrayList<String> block1 = new ArrayList<>(Arrays.asList("7", "3", "5", "8", "4", "2", "9", "6", "1"));
 
-        assertEquals(block1, sudokuService.createBlock(rows)  );
+        assertEquals(block1, sudokuService.createBlock(rows));
     }
 
     @Test
-    public void shouldCreateBlockRowOfSize31() {
+    public void shouldCreateBlocksFromGivenRows() {
         rows.add(row1);
         rows.add(row2);
         rows.add(row3);
 
         ArrayList<ArrayList<String>> blocks = new ArrayList<>();
-        blocks.add(new ArrayList<>(Arrays.asList("1", "2", "3", "2", "3", "4", "3", "4", "5")));
-        blocks.add(new ArrayList<>(Arrays.asList("4", "5", "6", "5", "6", "7", "6", "7", "8")));
-        blocks.add(new ArrayList<>(Arrays.asList("7", "8", "9", "8", "9", "1", "9", "1", "2")));
+        blocks.add(new ArrayList<>(Arrays.asList("7", "3", "5", "8", "4", "2", "9", "6", "1")));
+        blocks.add(new ArrayList<>(Arrays.asList("6", "1", "4", "9", "7", "3", "2", "8", "5")));
+        blocks.add(new ArrayList<>(Arrays.asList("8", "9", "2", "5", "6", "1", "3", "7", "4")));
 
         assertEquals(blocks, sudokuService.createBlocksOfRows(rows));
     }
 
     @Test
-    public void shouldRemoveFirstThreeElement() {
+    public void shouldRemoveFirstThreeRowsFromTheGrid() {
         rows.add(row1);
         rows.add(row2);
         rows.add(row3);
@@ -128,8 +118,36 @@ public class SudokuServiceTest {
 
     @Test
     public void shouldRemoveFirstThreeElementsFromTheRow() {
-        ArrayList<String> expected = new ArrayList<>(Arrays.asList("4", "5", "6", "7", "8", "9"));
+        ArrayList<String> expected = new ArrayList<>(Arrays.asList("6", "1", "4", "8", "9", "2"));
 
         assertEquals(expected, sudokuService.removeFirstThree(row1));
+    }
+
+    @Test
+    public void shouldCreateBlocksFromTheGrid() {
+        rows.add(row1);
+        rows.add(row2);
+        rows.add(row3);
+        rows.add(row4);
+        rows.add(row5);
+        rows.add(row6);
+        rows.add(row7);
+        rows.add(row8);
+        rows.add(row9);
+
+        ArrayList<ArrayList<String>> expectedList = new ArrayList<>();
+        expectedList.add(new ArrayList<>(Arrays.asList("7", "3", "5", "8", "4", "2", "9", "6", "1")));
+        expectedList.add(new ArrayList<>(Arrays.asList("6", "1", "4", "9", "7", "3", "2", "8", "5")));
+        expectedList.add(new ArrayList<>(Arrays.asList("8", "9", "2", "5", "6", "1", "3", "7", "4")));
+
+        expectedList.add(new ArrayList<>(Arrays.asList("2", "8", "6", "4", "1", "3", "5", "7", "9")));
+        expectedList.add(new ArrayList<>(Arrays.asList("3", "4", "9", "8", "5", "7", "1", "2", "6")));
+        expectedList.add(new ArrayList<>(Arrays.asList("1", "5", "7", "9", "2", "6", "4", "3", "8")));
+
+        expectedList.add(new ArrayList<>(Arrays.asList("1", "5", "7", "6", "9", "4", "3", "2", "8")));
+        expectedList.add(new ArrayList<>(Arrays.asList("4", "9", "2", "7", "3", "8", "5", "6", "1")));
+        expectedList.add(new ArrayList<>(Arrays.asList("6", "8", "3", "2", "1", "5", "7", "4", "9")));
+
+        assertEquals(expectedList, sudokuService.createBlocksFromGrid(new Grid(rows)));
     }
 }

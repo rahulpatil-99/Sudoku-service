@@ -113,5 +113,15 @@ public class SudokuServiceTest {
         expectedList.add(new ArrayList<>(Arrays.asList("6", "7", "8", "9", "1", "2", "3", "4", "5")));
 
         assertEquals(expectedList, sudokuService.removeFirstThree(rows));
-        }
+    }
+
+
+    @Test
+    public void shouldRemoveFirstThreeElementsFromTheRow() {
+        ArrayList<String> row = new ArrayList<>(Arrays.asList("1", "2", "3", "4", "5", "6", "7", "8", "9"));
+
+        ArrayList<String> expected = new ArrayList<>(Arrays.asList("4", "5", "6", "7", "8", "9"));
+
+        assertEquals(expected, sudokuService.removeFirstThree(row));
+    }
 }

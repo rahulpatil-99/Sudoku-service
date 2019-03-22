@@ -52,8 +52,9 @@ public class SudokuService {
         return new ArrayList<>();
     }
 
-    public ArrayList<ArrayList<String>> removeFirstThree(ArrayList<ArrayList<String>> rows) {
-        return new ArrayList<>(rows.subList(3,rows.size()));
-
+    public <T extends ArrayList> T removeFirstThree(T rows) {
+        return (T) new ArrayList<T>(rows.subList(3,rows.size()));
     }
+
+
 }

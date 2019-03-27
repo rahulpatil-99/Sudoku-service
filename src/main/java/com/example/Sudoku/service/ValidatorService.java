@@ -8,21 +8,30 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 
 @Service
-public class SudokuService {
+public class ValidatorService {
 
     public Boolean validate(Grid grid) {
         return DoesHaveUniqueElements(grid.getRows()) &&
                 DoesHaveUniqueElements(transpose(grid.getRows())) &&
-                DoesHaveUniqueElements(createBlocksFromGrid(grid));
+                DoesHaveUniqueElements(createBlocksFromGrid(grid.getRows()));
     }
 
-    public boolean DoesHaveUniqueElements(ArrayList<ArrayList<String>> rows) {
-        return rows.stream()
-                .allMatch(s-> s.size() == s.stream().distinct().toArray().length);
+    public boolean DoesHaveUniqueElements(ArrayList<ArrayList<String>> rows){
+        ArrayList<ArrayList<String>> uniqueElementsArray = new ArrayList<>();
+        rows.forEach(row -> {
+            ArrayList<String> arrayList = new ArrayList<>();
+            for (int i = 0; i < row.size(); i++) {
+                if (!arrayList.contains(row.get(i)) || row.get(i).equals("0")) {
+                    arrayList.add(row.get(i));
+                }
+            }
+            uniqueElementsArray.add(arrayList);
+        });
+        return uniqueElementsArray.containsAll(rows);
     }
 
     public ArrayList<ArrayList<String>> transpose(ArrayList<ArrayList<String>> rows) {
-        ArrayList<ArrayList<String>> columns = createColumnsOfSize(rows.size());
+        ArrayList<ArrayList<String>> columns = createEmptyGridOfSize(rows.size());
         rows.forEach(row -> {
             for (int pos = 0; pos < row.size(); pos++) {
                 columns.get(pos).add(row.get(pos));
@@ -31,7 +40,7 @@ public class SudokuService {
         return columns;
     }
 
-    private ArrayList<ArrayList<String>> createColumnsOfSize(int size) {
+    public ArrayList<ArrayList<String>> createEmptyGridOfSize(int size) {
         ArrayList<ArrayList<String>> columns = new ArrayList<>();
         for (int i = 0; i < size; i++) {
             columns.add(new ArrayList<>());
@@ -61,8 +70,7 @@ public class SudokuService {
     }
 
 
-    public ArrayList<ArrayList<String>> createBlocksFromGrid(Grid grid) {
-        ArrayList<ArrayList<String>> rows = grid.getRows();
+    public ArrayList<ArrayList<String>> createBlocksFromGrid(ArrayList<ArrayList<String>> rows) {
         ArrayList<ArrayList<String>> blocks = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             blocks.addAll(createBlocksOfRows(new ArrayList<>(rows.subList(0, 3))));

@@ -9,15 +9,15 @@ import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
-public class SudokuServiceTest {
+public class ValidatorServiceTest {
 
-    SudokuService sudokuService;
+    ValidatorService validatorService;
     ArrayList<ArrayList<String>> rows;
     ArrayList<String> row1, row2, row3, row4,row5, row6, row7, row8, row9;
 
     @Before
     public void setUp() {
-        sudokuService = new SudokuService();
+        validatorService = new ValidatorService();
         rows = new ArrayList<>();
         row1 = new ArrayList<>(Arrays.asList("7", "3", "5", "6", "1", "4", "8", "9", "2"));
         row2 = new ArrayList<>(Arrays.asList("8", "4", "2", "9", "7", "3", "5", "6", "1"));
@@ -31,10 +31,17 @@ public class SudokuServiceTest {
     }
 
     @Test
+    public void doesHaveUniqueElements() {
+        rows.add(new ArrayList<>(Arrays.asList("1", "2","3", "0", "0")));
+
+        assertTrue(validatorService.DoesHaveUniqueElements(rows));
+    }
+
+    @Test
     public void shouldReturnFalseWhenNumberIsRepeated() {
         rows.add(new ArrayList<>(Arrays.asList("1", "1", "3")));
 
-        assertFalse(sudokuService.validate(new Grid(rows)));
+        assertFalse(validatorService.validate(new Grid(rows)));
     }
 
     @Test
@@ -42,8 +49,7 @@ public class SudokuServiceTest {
         ArrayList<String> row = new ArrayList<>(Arrays.asList("1", "2"));
         rows.add(row);
         rows.add(row);
-
-        assertFalse(sudokuService.validate(new Grid(rows)));
+        assertFalse(validatorService.validate(new Grid(rows)));
     }
 
     @Test
@@ -54,7 +60,7 @@ public class SudokuServiceTest {
         ArrayList<ArrayList<String>> columns = new ArrayList<>();
         columns.add(new ArrayList<>(Arrays.asList("1", "3")));
         columns.add(new ArrayList<>(Arrays.asList("2", "4")));
-        ArrayList<ArrayList<String>> expected = sudokuService.transpose(rows);
+        ArrayList<ArrayList<String>> expected = validatorService.transpose(rows);
 
         assertEquals(columns, expected);
     }
@@ -70,7 +76,7 @@ public class SudokuServiceTest {
         rows.add(row7);
         rows.add(row8);
         rows.add(row9);
-        assertTrue(sudokuService.validate(new Grid(rows)));
+        assertTrue(validatorService.validate(new Grid(rows)));
     }
 
     @Test
@@ -81,7 +87,7 @@ public class SudokuServiceTest {
 
         ArrayList<String> block1 = new ArrayList<>(Arrays.asList("7", "3", "5", "8", "4", "2", "9", "6", "1"));
 
-        assertEquals(block1, sudokuService.createBlock(rows));
+        assertEquals(block1, validatorService.createBlock(rows));
     }
 
     @Test
@@ -95,7 +101,7 @@ public class SudokuServiceTest {
         blocks.add(new ArrayList<>(Arrays.asList("6", "1", "4", "9", "7", "3", "2", "8", "5")));
         blocks.add(new ArrayList<>(Arrays.asList("8", "9", "2", "5", "6", "1", "3", "7", "4")));
 
-        assertEquals(blocks, sudokuService.createBlocksOfRows(rows));
+        assertEquals(blocks, validatorService.createBlocksOfRows(rows));
     }
 
     @Test
@@ -112,15 +118,14 @@ public class SudokuServiceTest {
         expectedList.add(row5);
         expectedList.add(row6);
 
-        assertEquals(expectedList, sudokuService.removeFirstThree(rows));
+        assertEquals(expectedList, validatorService.removeFirstThree(rows));
     }
-
 
     @Test
     public void shouldRemoveFirstThreeElementsFromTheRow() {
         ArrayList<String> expected = new ArrayList<>(Arrays.asList("6", "1", "4", "8", "9", "2"));
 
-        assertEquals(expected, sudokuService.removeFirstThree(row1));
+        assertEquals(expected, validatorService.removeFirstThree(row1));
     }
 
     @Test
@@ -148,6 +153,6 @@ public class SudokuServiceTest {
         expectedList.add(new ArrayList<>(Arrays.asList("4", "9", "2", "7", "3", "8", "5", "6", "1")));
         expectedList.add(new ArrayList<>(Arrays.asList("6", "8", "3", "2", "1", "5", "7", "4", "9")));
 
-        assertEquals(expectedList, sudokuService.createBlocksFromGrid(new Grid(rows)));
+        assertEquals(expectedList, validatorService.createBlocksFromGrid(rows));
     }
 }

@@ -1,43 +1,55 @@
 package com.example.Sudoku.service;
 
-import java.util.ArrayList;
-import java.util.Random;
+import com.example.Sudoku.domain.Grid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.stream.IntStream;
+
+@Service
 public class GridGeneratorService {
 
     private ValidatorService validatorService;
 
+    @Autowired
     public GridGeneratorService(ValidatorService validatorService) {
         this.validatorService = validatorService;
     }
 
-    public ArrayList<ArrayList<String>> generate(int max) {
-        ArrayList<ArrayList<String>> emptyGrid = fillWithSymbol(validatorService.createEmptyGridOfSize(max));
-        Random random = new Random();
-        emptyGrid.forEach(row -> {
-            ArrayList<String> range = createRangeTill(max);
-            for(int i = 0; i < max; i++) {
-                if(!range.isEmpty()){
-                    String element = range.get(random.nextInt(range.size()));
-                    row.set(i, element);
-                    range.remove(element);
-                }
+    public Grid generate(int max) {
+        Grid emptyGrid = fillWithSymbol(new Grid(validatorService.createEmptyGridOfSize(max)), max);
+        ArrayList<String> list = createRangeTill(0, max-1);
+        int count = 1;
+        while(count < 31){
+
+            ArrayList<String> range = createRangeTill(1, max);
+
+            int rowNumber = Integer.parseInt(list.get((int) Math.floor(Math.random() * list.size())));
+            int cellNumber = Integer.parseInt(list.get((int) Math.floor(Math.random() * list.size())));
+            String element = range.get((int) Math.floor(Math.random() * range.size()));
+
+            ArrayList<String> row = emptyGrid.getRows().get(rowNumber);
+
+            if(row.get(cellNumber).equals("0")){
+               row.set(cellNumber, element);
+
+               if(validatorService.validate(emptyGrid)) count++;
+               else row.set(cellNumber, "0");
             }
-        });
+        }
         return emptyGrid;
     }
 
-    private ArrayList<String> createRangeTill(int max) {
+    public ArrayList<String> createRangeTill(int min, int max) {
         ArrayList<String> strings = new ArrayList<>();
-        for (int i = 1; i < max+1; i++) {
-            strings.add(String.valueOf(i));
-        }
+        for (int i = min; i < max+1; i++) strings.add(String.valueOf(i));
         return strings;
     }
 
-    private ArrayList<ArrayList<String>> fillWithSymbol(ArrayList<ArrayList<String>> emptyGrid){
-        emptyGrid.forEach(row -> {
-            for(int i = 0; i < 9; i++) row.add("_");
+    private Grid fillWithSymbol(Grid emptyGrid, int max){
+        emptyGrid.getRows().forEach(row -> {
+            IntStream.range(0, max).mapToObj(i -> "0").forEachOrdered(row::add);
         });
         return emptyGrid;
     }

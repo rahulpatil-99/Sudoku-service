@@ -15,8 +15,7 @@ public class GridGeneratorServiceTest {
     @Before
     public void setUp() {
         validatorService = new ValidatorService();
-        gridGeneratorService = new GridGenera
-    torService(validatorService);
+        gridGeneratorService = new GridGeneratorService(validatorService);
     }
 
     @Test

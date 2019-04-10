@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class ValidatorService {
@@ -20,11 +21,7 @@ public class ValidatorService {
         ArrayList<ArrayList<String>> uniqueElementsArray = new ArrayList<>();
         rows.forEach(row -> {
             ArrayList<String> arrayList = new ArrayList<>();
-            for (int i = 0; i < row.size(); i++) {
-                if (!arrayList.contains(row.get(i)) || row.get(i).equals("0")) {
-                    arrayList.add(row.get(i));
-                }
-            }
+            row.stream().filter(s -> !arrayList.contains(s) || s.equals("0")).forEach(arrayList::add);
             uniqueElementsArray.add(arrayList);
         });
         return uniqueElementsArray.containsAll(rows);
@@ -32,11 +29,7 @@ public class ValidatorService {
 
     public ArrayList<ArrayList<String>> transpose(ArrayList<ArrayList<String>> rows) {
         ArrayList<ArrayList<String>> columns = createEmptyGridOfSize(rows.size());
-        rows.forEach(row -> {
-            for (int pos = 0; pos < row.size(); pos++) {
-                columns.get(pos).add(row.get(pos));
-            }
-        });
+        rows.forEach(row -> IntStream.range(0, row.size()).forEach(pos -> columns.get(pos).add(row.get(pos))));
         return columns;
     }
 
